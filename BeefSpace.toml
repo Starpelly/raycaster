@@ -1,0 +1,5 @@
+FileVersion = 1
+Projects = {raycaster = {Path = "."}, Trinkit = {Path = "Trinkit/TrinkitBeef"}}
+
+[Workspace]
+StartupProject = "raycaster"

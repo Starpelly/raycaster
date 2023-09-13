@@ -1,6 +1,7 @@
 using System;
-using Trinkit.Raylib;
 using System.Collections;
+
+using Trinkit.Raylib;
 using static Trinkit.Raylib.Raylib;
 
 namespace raycaster;
@@ -8,7 +9,6 @@ namespace raycaster;
 class Program
 {
 	static Rayroom room = new .() ~ delete _;
-	
 
 	public static int Main(String[] args)
 	{

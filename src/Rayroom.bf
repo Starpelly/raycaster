@@ -1,14 +1,29 @@
 using System.Collections;
 using System;
-using Trinkit.Raylib;
 using System.Collections;
+
+using Trinkit.Raylib;
 using static Trinkit.Raylib.Raylib;
 
 namespace raycaster;
 
 public class Rayroom
 {
-	public float aadsadsdsapakojsdosdaoikpsd;
+	Player player;
+
+	int mapX = 8, mapY = 8, mapS = 64;
+
+	List<int> map = new .()
+	{
+		1,1,1,1,1,1,1,1,
+		1,0,1,0,0,0,0,1,
+		1,0,1,0,0,0,0,1,
+		1,0,1,0,0,0,0,1,
+		1,0,0,0,0,0,0,1,
+		1,0,0,0,0,1,0,1,
+		1,0,1,0,0,0,0,1,
+		1,1,1,1,1,1,1,1,
+	} ~ delete _;
 
 	private struct Player
 	{
@@ -22,20 +37,6 @@ public class Rayroom
 			DrawLine((int32)x, (int32)y, (int32)(x + deltaX * 5), (int32)(y + deltaY * 5), YELLOW);
 		}
 	}
-	Player player;
-
-	int mapX = 8, mapY = 8, mapS = 64;
-	List<int> map = new .()
-	{
-		1,1,1,1,1,1,1,1,
-		1,0,1,0,0,0,0,1,
-		1,0,1,0,0,0,0,1,
-		1,0,1,0,0,0,0,1,
-		1,0,0,0,0,0,0,1,
-		1,0,0,0,0,1,0,1,
-		1,0,1,0,0,0,0,1,
-		1,1,1,1,1,1,1,1,
-	} ~ delete _;
 
 	public this()
 	{
@@ -46,7 +47,7 @@ public class Rayroom
 		player.speed = 0.2f;
 	}
 
-	void DrawMap2D()
+	private void DrawMap2D()
 	{
 		int xo = 0, yo = 0;
 		int space = 2;
@@ -67,12 +68,12 @@ public class Rayroom
 		}
 	}
 
-	float Distance(float ax, float ay, float bx, float by, float angle)
+	private float Distance(float ax, float ay, float bx, float by, float angle)
 	{
 		return Math.Sqrt((bx - ax) * (bx - ax) + (by - ay) * (by - ay));
 	}
 
-	void DrawRays2D()
+	private void DrawRays2D()
 	{
 		int r, mx, my, mp = 0, depthOfField;
 		float rx = 0, ry = 0, rAngle, xo = 0, yo = 0, disT = 0;
@@ -87,6 +88,7 @@ public class Rayroom
 		for (r = 0; r < 60; r++)
 		{
 			/// ===========================---- HORIZONTAL LINES ----===========================
+
 			depthOfField = 0;
 			float disH = 1000000, hx = player.x, hy = player.y;
 			var aTan = -1 / Math.Tan(rAngle);
@@ -106,8 +108,6 @@ public class Rayroom
 			{
 				mx = (int)(rx) >> 6;		my = (int)(ry) >> 6;		mp = my * mapX + mx;
 
-				// if (mp < 0) break;
-
 				if (mp > 0 && mp < mapX * mapY && map[mp] > 0) // hit wall
 				{
 					hx = rx; hy = ry;
@@ -124,10 +124,9 @@ public class Rayroom
 				}
 			}
 
-			// DrawLineEx(Trinkit.Vector2(player.x, player.y), Trinkit.Vector2((float)rx, (float)ry), 10, GREEN);
-
 
 			/// ===========================---- VERTICAL LINES ----===========================
+
 			depthOfField = 0;
 			float disV = 1000000, vx = player.x, vy = player.y;
 			var nTan = -Math.Tan(rAngle);
@@ -146,8 +145,6 @@ public class Rayroom
 			while (depthOfField < 8)
 			{
 				mx = (int)(rx) >> 6;		my = (int)(ry) >> 6;		mp = my * mapX + mx;
-
-				// if (mp < 0) break;
 
 				if (mp > 0 && mp < mapX * mapY && map[mp] > 0) // hit wall
 				{
@@ -171,7 +168,6 @@ public class Rayroom
 			DrawLineEx(Trinkit.Vector2(player.x, player.y), Trinkit.Vector2(rx, ry), 1, color);
 
 
-
 			/// ===========================----DRAW 3D WALLS ----===========================
 
 			var ca = player.angle - rAngle; if (ca < 0) { ca += 2 * Trinkit.Mathf.PI; } if (ca > 2 * Trinkit.Mathf.PI) { ca -= 2 * Trinkit.Mathf.PI; }
@@ -190,23 +186,27 @@ public class Rayroom
 	public void Update()
 	{
 		var rotateSpd = 0.03f;
-		if (IsKeyDown((int32)Trinkit.KeyCode.A)) {
+		if (IsKeyDown((int32)Trinkit.KeyCode.A))
+		{
 			player.angle -= rotateSpd;
 			if (player.angle < 0) { player.angle += 2 * Trinkit.Mathf.PI; }
 			player.deltaX = Trinkit.Mathf.Cos(player.angle) * 5;
 			player.deltaY = Trinkit.Mathf.Sin(player.angle) * 5;
 		}
-		if (IsKeyDown((int32)Trinkit.KeyCode.D)) {
+		if (IsKeyDown((int32)Trinkit.KeyCode.D))
+		{
 			player.angle += rotateSpd;
 			if (player.angle > 2 * Trinkit.Mathf.PI) { player.angle -= 2 * Trinkit.Mathf.PI; }
 			player.deltaX = Trinkit.Mathf.Cos(player.angle) * 5;
 			player.deltaY = Trinkit.Mathf.Sin(player.angle) * 5;
 		}
-		if (IsKeyDown((int32)Trinkit.KeyCode.W)) {
+		if (IsKeyDown((int32)Trinkit.KeyCode.W))
+		{
 			player.x += player.deltaX * player.speed;
 			player.y += player.deltaY * player.speed;
 		}
-		if (IsKeyDown((int32)Trinkit.KeyCode.S)) {
+		if (IsKeyDown((int32)Trinkit.KeyCode.S))
+		{
 			player.x -= player.deltaX * player.speed;
 			player.y -= player.deltaY * player.speed;
 		}
